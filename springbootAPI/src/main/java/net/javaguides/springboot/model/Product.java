@@ -28,23 +28,17 @@ public class Product {
 	@Column(name = "discount")
 	private double discount;
 
-	@Column(name = "entered_date")
-	private Date enteredDate;
-
-	@Lob
 	@Column(name = "image")
-	private byte[] image;
+	private String image;
 
 	@Column(name = "quantity")
 	private int quantity;
 
-	@ManyToOne
-	@JoinColumn(name = "category_id")
-	private Category category;
+	@Column(name = "category_id")
+	private int categoryId;
 
-	@ManyToOne
-	@JoinColumn(name = "supplier_id")
-	private Supplier supplier;
+	@Column(name = "supplier_id")
+	private int supplierId;
 
 
 }

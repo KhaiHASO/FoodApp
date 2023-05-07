@@ -16,6 +16,9 @@ public class Supplier {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "image")
+    private String image;
+
     @Column(name = "name")
     private String name;
 

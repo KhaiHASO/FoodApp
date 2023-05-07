@@ -30,13 +30,13 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product getProductById(long id) {
+	public Product getProductById(int id) {
 		return productRepository.findById(id).orElseThrow(() ->
 				new ResourceNotFoundException("Product", "Id", id));
 	}
 
 	@Override
-	public Product updateProduct(Product product, long id) {
+	public Product updateProduct(Product product, int id) {
 		// we need to check whether product with given id is exist in DB or not
 		Product existingProduct = productRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Product", "Id", id));
@@ -45,10 +45,9 @@ public class ProductServiceImpl implements ProductService {
 		existingProduct.setDescription(product.getDescription());
 		existingProduct.setPrice(product.getPrice());
 		existingProduct.setQuantity(product.getQuantity());
-		existingProduct.setCategory(product.getCategory());
-		existingProduct.setSupplier(product.getSupplier());
+		existingProduct.setCategoryId(product.getCategoryId());
+		existingProduct.setSupplierId(product.getSupplierId());
 		existingProduct.setDiscount(product.getDiscount());
-		existingProduct.setEnteredDate(product.getEnteredDate());
 		existingProduct.setImage(product.getImage());
 
 		// save existing product to DB
@@ -57,11 +56,16 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void deleteProduct(long id) {
+	public void deleteProduct(int id) {
 		// check whether a product exist in a DB or not
 		productRepository.findById(id).orElseThrow(() ->
 				new ResourceNotFoundException("Product", "Id", id));
 		productRepository.deleteById(id);
+	}
+
+	@Override
+	public List<Product> findProductsByCategoryId(int id) {
+		return productRepository.findProductsByCategoryId(id);
 	}
 
 }

@@ -13,6 +13,9 @@ public class Category {
     @Column(name = "category_id")
     private int categoryId;
 
+    @Column(name = "image")
+    private String image;
+
     @Column(name = "name")
     private String name;
 }

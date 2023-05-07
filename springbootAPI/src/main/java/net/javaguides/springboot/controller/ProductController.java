@@ -34,26 +34,32 @@ public class ProductController {
 	// build get product by id REST API
 	// http://localhost:8080/api/products/1
 	@GetMapping("{id}")
-	public ResponseEntity<Product> getProductById(@PathVariable("id") long productId){
+	public ResponseEntity<Product> getProductById(@PathVariable("id") int productId){
 		return new ResponseEntity<Product>(productService.getProductById(productId), HttpStatus.OK);
+	}
+
+	@GetMapping("/category/{categoryId}")
+	public List<Product> getProductsByCategoryId(@PathVariable Integer categoryId) {
+		return productService.findProductsByCategoryId(categoryId);
 	}
 
 	// build update product REST API
 	// http://localhost:8080/api/products/1
 	@PutMapping("{id}")
-	public ResponseEntity<Product> updateProduct(@PathVariable("id") long id, @RequestBody Product product){
+	public ResponseEntity<Product> updateProduct(@PathVariable("id") int id, @RequestBody Product product){
 		return new ResponseEntity<Product>(productService.updateProduct(product, id), HttpStatus.OK);
 	}
 
 	// build delete product REST API
 	// http://localhost:8080/api/products/1
 	@DeleteMapping("{id}")
-	public ResponseEntity<String> deleteProduct(@PathVariable("id") long id){
+	public ResponseEntity<String> deleteProduct(@PathVariable("id") int id){
 
 		// delete product from DB
 		productService.deleteProduct(id);
 
 		return new ResponseEntity<String>("Product deleted successfully!.", HttpStatus.OK);
 	}
+
 
 }

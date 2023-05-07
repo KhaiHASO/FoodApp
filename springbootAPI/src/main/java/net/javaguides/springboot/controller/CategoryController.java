@@ -34,21 +34,21 @@ public class CategoryController {
     // get category by id REST API
     // http://localhost:8080/api/categories/1
     @GetMapping("{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable("id") long categoryId) {
+    public ResponseEntity<Category> getCategoryById(@PathVariable("id") int categoryId) {
         return new ResponseEntity<Category>(categoryService.getCategoryById(categoryId), HttpStatus.OK);
     }
 
     // update category REST API
     // http://localhost:8080/api/categories/1
     @PutMapping("{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable("id") long id, @RequestBody Category category) {
+    public ResponseEntity<Category> updateCategory(@PathVariable("id") int id, @RequestBody Category category) {
         return new ResponseEntity<Category>(categoryService.updateCategory(category, id), HttpStatus.OK);
     }
 
     // delete category REST API
     // http://localhost:8080/api/categories/1
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable("id") long id) {
+    public ResponseEntity<String> deleteCategory(@PathVariable("id") int id) {
 
         // delete category from DB
         categoryService.deleteCategory(id);

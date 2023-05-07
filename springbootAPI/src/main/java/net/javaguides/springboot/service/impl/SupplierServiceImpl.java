@@ -30,13 +30,13 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Supplier getSupplierById(long id) {
+    public Supplier getSupplierById(int id) {
         return supplierRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Supplier", "Id", id));
     }
 
     @Override
-    public Supplier updateSupplier(Supplier supplier, long id) {
+    public Supplier updateSupplier(Supplier supplier, int id) {
         // we need to check whether supplier with given id is exist in DB or not
         Supplier existingSupplier = supplierRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Supplier", "Id", id));
@@ -44,6 +44,7 @@ public class SupplierServiceImpl implements SupplierService {
         existingSupplier.setName(supplier.getName());
         existingSupplier.setEmail(supplier.getEmail());
         existingSupplier.setPhone(supplier.getPhone());
+        existingSupplier.setImage(supplier.getImage());
 
         // save existing supplier to DB
         supplierRepository.save(existingSupplier);
@@ -51,7 +52,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public void deleteSupplier(long id) {
+    public void deleteSupplier(int id) {
         // check whether a supplier exist in a DB or not
         supplierRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Supplier", "Id", id));

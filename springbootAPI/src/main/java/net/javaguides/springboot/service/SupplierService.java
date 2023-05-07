@@ -7,7 +7,7 @@ import net.javaguides.springboot.model.Supplier;
 public interface SupplierService {
     Supplier saveSupplier(Supplier supplier);
     List<Supplier> getAllSuppliers();
-    Supplier getSupplierById(long id);
-    Supplier updateSupplier(Supplier supplier, long id);
-    void deleteSupplier(long id);
+    Supplier getSupplierById(int id);
+    Supplier updateSupplier(Supplier supplier, int id);
+    void deleteSupplier(int id);
 }
