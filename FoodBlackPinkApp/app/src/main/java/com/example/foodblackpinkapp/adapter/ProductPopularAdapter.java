@@ -14,12 +14,12 @@ import com.example.foodblackpinkapp.model.Product;
 
 import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class ProductPopularAdapter extends RecyclerView.Adapter<ProductPopularAdapter.ProductViewHolder> {
 
     private final List<Product> mListProducts;
     private final IOnClickProductItemListener iOnClickProductItemListener;
 
-    public ProductAdapter(List<Product> mListProducts, IOnClickProductItemListener iOnClickProductItemListener) {
+    public ProductPopularAdapter(List<Product> mListProducts, IOnClickProductItemListener iOnClickProductItemListener) {
         this.mListProducts = mListProducts;
         this.iOnClickProductItemListener = iOnClickProductItemListener;
     }

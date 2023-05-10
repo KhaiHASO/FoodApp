@@ -18,13 +18,13 @@ public class Product {
 	private String name;
 
 	@Column(name = "price")
-	private double price;
+	private int price;
 
 	@Column(name = "description")
 	private String description;
 
 	@Column(name = "discount")
-	private double discount;
+	private int discount;
 
 	@Column(name = "image")
 	private String image;

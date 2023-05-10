@@ -17,11 +17,11 @@ public class Product implements Serializable {
     @SerializedName("name")
     private String name;
     @SerializedName("price")
-    private double price;
+    private int price;
     @SerializedName("description")
     private String description;
     @SerializedName("discount")
-    private double discount;
+    private int discount;
     @SerializedName("image")
     private String image;
     @SerializedName("quantity")
@@ -47,11 +47,11 @@ public class Product implements Serializable {
         this.name = name;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -63,11 +63,11 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-    public double getDiscount() {
+    public int getDiscount() {
         return discount;
     }
 
-    public void setDiscount(double discount) {
+    public void setDiscount(int discount) {
         this.discount = discount;
     }
 
@@ -103,7 +103,7 @@ public class Product implements Serializable {
         this.supplierId = supplierId;
     }
 
-    public double getRealPrice() {
+    public int getRealPrice() {
         if (discount <= 0) {
             return price;
         }
