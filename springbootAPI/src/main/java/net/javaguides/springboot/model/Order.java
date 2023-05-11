@@ -24,7 +24,7 @@ public class Order {
     private Date orderDate;
 
     @Column(name = "total_price")
-    private double totalPrice;
+    private int totalPrice;
 
 
 }

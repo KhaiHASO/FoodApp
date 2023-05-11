@@ -9,12 +9,17 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import com.example.foodblackpinkapp.R;
+import com.example.foodblackpinkapp.activity.FoodDetailActivity;
+import com.example.foodblackpinkapp.activity.MainActivity;
 import com.example.foodblackpinkapp.adapter.ProductPopularAdapter;
 import com.example.foodblackpinkapp.adapter.ProductGridAdapter;
 import com.example.foodblackpinkapp.constant.Constant;
@@ -63,6 +68,7 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mFragmentHomeBinding = FragmentHomeBinding.inflate(inflater, container, false);
         getListProductFromApi("");
+        initSearch();
         return mFragmentHomeBinding.getRoot();
     }
 
@@ -140,13 +146,57 @@ public class HomeFragment extends BaseFragment {
     private void goToFoodDetail(@NonNull Product product) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constant.KEY_INTENT_FOOD_OBJECT, product);
-       // GlobalFunction.startActivity(getActivity(), FoodDetailActivity.class, bundle);
+        GlobalFunction.startActivity(getActivity(), FoodDetailActivity.class, bundle);
+    }
+
+    private void initSearch()
+    {
+        mFragmentHomeBinding.edtSearchName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String strKey = s.toString().trim();
+                if (strKey.equals("") || strKey.length() == 0) {
+                    if (mListProduct != null) mListProduct.clear();
+                    getListProductFromApi("");
+                }
+            }
+        });
+
+        mFragmentHomeBinding.imgSearch.setOnClickListener(view -> searchFood());
+
+        mFragmentHomeBinding.edtSearchName.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchFood();
+                return true;
+            }
+            return false;
+        });
     }
 
 
     @Override
     protected void initToolbar() {
+        if (getActivity() != null) {
+            ((MainActivity) getActivity()).setToolBar(true, getString(R.string.home));
+        }
 
+
+    }
+    private void searchFood() {
+        String strKey = mFragmentHomeBinding.edtSearchName.getText().toString().trim();
+        if (mListProduct != null) mListProduct.clear();
+        getListProductFromApi(strKey);
+        GlobalFunction.hideSoftKeyboard(getActivity());
     }
 
     @NonNull

@@ -20,7 +20,7 @@ public class OrderDetail {
     private Integer quantity;
 
     @Column(name = "price")
-    private BigDecimal price;
+    private int price;
 
     @Column(name = "order_id")
     private Integer orderId;
