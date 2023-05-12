@@ -16,6 +16,19 @@ public class Customer {
     @SerializedName("photo")
     private String photo;
 
+    public Customer(String customerId, String password) {
+        this.customerId=customerId;
+        this.password=password;
+    }
+
+    public Customer(String customerId, String email, String phone, String fullname, String password) {
+        this.customerId = customerId;
+        this.email = email;
+        this.phone = phone;
+        this.fullname = fullname;
+        this.password = password;
+    }
+
     public String getCustomerId() {
         return customerId;
     }

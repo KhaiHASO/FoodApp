@@ -43,6 +43,7 @@ public class FoodDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideTitleBar();
         mActivityFoodDetailBinding = ActivityFoodDetailBinding.inflate(getLayoutInflater());
         setContentView(mActivityFoodDetailBinding.getRoot());
 

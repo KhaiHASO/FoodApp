@@ -15,14 +15,27 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideTitleBar();
         setContentView(R.layout.activity_splash);
-        startMainActivity();
+        //startMainActivity();
+        startLoginActivity();
+
     }
 
     private void startMainActivity() {
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }, 3000);
+    }
+
+    private void startLoginActivity() {
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
