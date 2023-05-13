@@ -38,6 +38,11 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         hideTitleBar();
         setContentView(R.layout.activity_login);
+        if (ShareRefManager.getInstance(this).isLoggedIn()) {
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+            return;
+        }
         initView();
     }
 
