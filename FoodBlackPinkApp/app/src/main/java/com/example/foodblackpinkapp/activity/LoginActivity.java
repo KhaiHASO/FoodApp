@@ -19,6 +19,7 @@ import com.example.foodblackpinkapp.R;
 import com.example.foodblackpinkapp.database.ApiService;
 import com.example.foodblackpinkapp.database.RetrofitBase;
 import com.example.foodblackpinkapp.model.Customer;
+import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,6 +75,7 @@ public class LoginActivity extends BaseActivity {
                     Log.d("CustomerInfo", "Customer ID: " + customer.getCustomerId());
                     Log.d("CustomerInfo", "Email: " + customer.getEmail());
                     Log.d("CustomerInfo", "Phone: " + customer.getPhone());
+                    ShareRefManager.getInstance(getApplicationContext()).customerLogin(customer);
                     startMainActivity();
                 } else {
                     String errorBody = response.errorBody().toString();
