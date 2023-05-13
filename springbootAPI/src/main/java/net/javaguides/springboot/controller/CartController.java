@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/api/carts")
 public class CartController {
 
-    private CartService cartService;
+    private final CartService cartService;
 
     public CartController(CartService cartService) {
         super();
@@ -21,7 +21,7 @@ public class CartController {
     // create cart REST API
     @PostMapping()
     public ResponseEntity<Cart> saveCart(@RequestBody Cart cart) {
-        return new ResponseEntity<Cart>(cartService.saveCart(cart), HttpStatus.CREATED);
+        return new ResponseEntity<>(cartService.saveCart(cart), HttpStatus.CREATED);
     }
 
     // get all carts REST API
@@ -34,7 +34,7 @@ public class CartController {
     // http://localhost:8080/api/carts/1
     @GetMapping("{id}")
     public ResponseEntity<Cart> getCartById(@PathVariable("id") int cartId) {
-        return new ResponseEntity<Cart>(cartService.getCartById(cartId), HttpStatus.OK);
+        return new ResponseEntity<>(cartService.getCartById(cartId), HttpStatus.OK);
     }
 
     // get cart by customer id REST API
@@ -48,7 +48,7 @@ public class CartController {
     // http://localhost:8080/api/carts/1
     @PutMapping("{id}")
     public ResponseEntity<Cart> updateCart(@PathVariable("id") int id, @RequestBody Cart cart) {
-        return new ResponseEntity<Cart>(cartService.updateCart(cart, id), HttpStatus.OK);
+        return new ResponseEntity<>(cartService.updateCart(cart, id), HttpStatus.OK);
     }
 
     // delete cart REST API
@@ -59,7 +59,15 @@ public class CartController {
         // delete cart from DB
         cartService.deleteCart(id);
 
-        return new ResponseEntity<String>("Cart deleted successfully!.", HttpStatus.OK);
+        return new ResponseEntity<>("Cart deleted successfully!.", HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{customerId}/{productId}")
+    public void updateCart(@PathVariable String customerId,
+                           @PathVariable Integer productId,
+                           @RequestParam Integer quantity,
+                           @RequestParam Integer price) {
+        cartService.updateCart(quantity, price, customerId, productId);
     }
 
 }

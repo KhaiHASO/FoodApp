@@ -23,4 +23,7 @@ public class Cart {
     @Column(name = "quantity")
     private int quantity;
 
+    @Column(name = "price")
+    private int price;
+
 }

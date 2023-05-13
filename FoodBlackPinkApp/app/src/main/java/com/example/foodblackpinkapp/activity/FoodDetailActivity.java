@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,8 +21,11 @@ import com.example.foodblackpinkapp.constant.GlobalFunction;
 import com.example.foodblackpinkapp.database.ApiService;
 import com.example.foodblackpinkapp.database.RetrofitBase;
 import com.example.foodblackpinkapp.databinding.ActivityFoodDetailBinding;
+import com.example.foodblackpinkapp.model.Cart;
+import com.example.foodblackpinkapp.model.Customer;
 import com.example.foodblackpinkapp.model.Product;
 import com.example.foodblackpinkapp.model.ProductDetail;
+import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
 import com.example.foodblackpinkapp.utils.GlideUtils;
 import com.example.foodblackpinkapp.utils.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -37,6 +41,7 @@ public class FoodDetailActivity extends BaseActivity {
 
     private ActivityFoodDetailBinding mActivityFoodDetailBinding;
     private Product mProduct;
+    private Customer mCustomer;
     private List<ProductDetail> mListProductDetail;
     private ApiService mApiService;
 
@@ -165,8 +170,9 @@ public class FoodDetailActivity extends BaseActivity {
             return;
         }
 
-        @SuppressLint("InflateParams") View viewDialog = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_cart, null);
+        Cart mCart = new Cart();
 
+        View viewDialog = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_cart, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(viewDialog);
 
@@ -186,46 +192,69 @@ public class FoodDetailActivity extends BaseActivity {
         String strTotalPrice = totalPrice + Constant.CURRENCY;
         tvFoodPriceCart.setText(strTotalPrice);
 
+        final int[] quantity = {1}; // Số lượng ban đầu là 1
+
         tvSubtractCount.setOnClickListener(v -> {
             // Giảm số lượng sản phẩm trong giỏ hàng
-            int count = Integer.parseInt(tvCount.getText().toString());
-            if (count <= 1) {
-                return;
+            if (quantity[0] > 1) {
+                quantity[0]--;
             }
-            int newCount = Integer.parseInt(tvCount.getText().toString()) - 1;
-            tvCount.setText(String.valueOf(newCount));
-
-            int totalPrice1 = mProduct.getRealPrice() * newCount;
-            String strTotalPrice1 = totalPrice1 + Constant.CURRENCY;
-            tvFoodPriceCart.setText(strTotalPrice1);
-
-            //mProduct.setCount(newCount);
-            //mProduct.setTotalPrice(totalPrice1);
+            updateQuantityAndPrice(tvCount, tvFoodPriceCart, mProduct.getRealPrice(), quantity[0]);
         });
 
         tvAddCount.setOnClickListener(v -> {
             // Tăng số lượng sản phẩm trong giỏ hàng
-            int newCount = Integer.parseInt(tvCount.getText().toString()) + 1;
-            tvCount.setText(String.valueOf(newCount));
-
-            int totalPrice2 = mProduct.getRealPrice() * newCount;
-            String strTotalPrice2 = totalPrice2 + Constant.CURRENCY;
-            tvFoodPriceCart.setText(strTotalPrice2);
-
-            //mFood.setCount(newCount);
-            //mFood.setTotalPrice(totalPrice2);
+            quantity[0]++;
+            updateQuantityAndPrice(tvCount, tvFoodPriceCart, mProduct.getRealPrice(), quantity[0]);
         });
 
         tvCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
         tvAddCart.setOnClickListener(v -> {
             // Thêm sản phẩm vào giỏ hàng
+            mCart.setCustomerId(ShareRefManager.getInstance(getApplicationContext()).getCustomer().getCustomerId());
+            mCart.setProductId(mProduct.getProductId());
+            mCart.setQuantity(quantity[0]);
+            mCart.setPrice(mProduct.getRealPrice() * quantity[0]);
+            Log.d("Cart", "Adding to cart: " + mCart.toString());
+
             bottomSheetDialog.dismiss();
             setStatusButtonAddToCart();
-            // Gọi phương thức backend để thêm sản phẩm vào giỏ hàng
+
+            mApiService = RetrofitBase.getInstance();
+            Call<Cart> call = mApiService.addToCart(mCart);
+            call.enqueue(new Callback<Cart>() {
+                @Override
+                public void onResponse(Call<Cart> call, Response<Cart> response) {
+                    if (response.isSuccessful()) {
+                        Cart cart = response.body();
+                        Log.d("Cart", "Adding to cart: " + cart.toString());
+                        Toast.makeText(getApplicationContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
+                        // Xử lý khi thêm vào giỏ hàng thành công
+                    } else {
+                        String errorBody = response.errorBody().toString();
+                        Log.d("CartError", "lỗi" + errorBody);
+                        Toast.makeText(getApplicationContext(), "đã tồn tại" + errorBody, Toast.LENGTH_SHORT).show();
+
+                        // Xử lý khi thêm vào giỏ hàng không thành công
+                    }
+                }
+                @Override
+                public void onFailure(Call<Cart> call, Throwable t) {
+                    Log.d("CartError", "Lỗi thêm vào giỏ hàng: " + t.getMessage());
+                    // Xử lý khi gặp lỗi thêm vào giỏ hàng
+                }
+            });
         });
 
         bottomSheetDialog.show();
+    }
+
+    private void updateQuantityAndPrice(TextView tvCount, TextView tvFoodPriceCart, int unitPrice, int quantity) {
+        tvCount.setText(String.valueOf(quantity));
+        int totalPrice = unitPrice * quantity;
+        String strTotalPrice = totalPrice + Constant.CURRENCY;
+        tvFoodPriceCart.setText(strTotalPrice);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.foodblackpinkapp.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -7,26 +8,37 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodblackpinkapp.constant.Constant;
+import com.example.foodblackpinkapp.database.ApiService;
+import com.example.foodblackpinkapp.database.RetrofitBase;
 import com.example.foodblackpinkapp.databinding.ItemCartBinding;
-import com.example.foodblackpinkapp.model.Product;
+import com.example.foodblackpinkapp.model.CartProductViewDTO;
+import com.example.foodblackpinkapp.model.Customer;
+import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
 import com.example.foodblackpinkapp.utils.GlideUtils;
 
+import java.io.IOException;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
-    private final List<Product> mListProducts;
+    private List<CartProductViewDTO> mListCartProducts;
     private final IClickListener iClickListener;
+    private final String customerId;
 
     public interface IClickListener {
-        void clickDeleteProduct(Product product, int position);
+        void clickDeteteFood(CartProductViewDTO cartProductView, int position);
 
-        void updateItemProduct(Product product, int position);
+        void updateItemFood(CartProductViewDTO cartProductView, int position);
     }
 
-    public CartAdapter(List<Product> mListProducts, IClickListener iClickListener) {
-        this.mListProducts = mListProducts;
+    public CartAdapter(List<CartProductViewDTO> mListCartProducts, IClickListener iClickListener, String customerId) {
+        this.mListCartProducts = mListCartProducts;
         this.iClickListener = iClickListener;
+        this.customerId = customerId;
     }
 
     @NonNull
@@ -38,48 +50,74 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        Product product = mListProducts.get(position);
-        if (product == null) {
+        CartProductViewDTO cartProductView = mListCartProducts.get(position);
+        if (cartProductView == null) {
             return;
         }
-        GlideUtils.loadUrl(product.getImage(), holder.mItemCartBinding.imgFoodCart);
-        holder.mItemCartBinding.tvFoodNameCart.setText(product.getName());
+        GlideUtils.loadUrl(cartProductView.getImage(), holder.mItemCartBinding.imgFoodCart);
 
-        String strProductPriceCart = product.getPrice() + Constant.CURRENCY;
-        if (product.getDiscount() > 0) {
-            strProductPriceCart = product.getRealPrice() + Constant.CURRENCY;
+        holder.mItemCartBinding.tvFoodNameCart.setText(cartProductView.getName());
+
+        final String[] strFoodPriceCart = {cartProductView.getPrice() + Constant.CURRENCY};
+        // Kiểm tra nếu có giảm giá
+        if (cartProductView.getDiscount() > 0) {
+            int realPrice = cartProductView.getPrice() - (cartProductView.getPrice() * cartProductView.getDiscount() / 100);
+            strFoodPriceCart[0] = realPrice + Constant.CURRENCY;
         }
-        holder.mItemCartBinding.tvFoodPriceCart.setText(strProductPriceCart);
+        holder.mItemCartBinding.tvFoodPriceCart.setText(strFoodPriceCart[0]);
+        holder.mItemCartBinding.tvCount.setText(String.valueOf(cartProductView.getQuantity()));
 
         holder.mItemCartBinding.tvSubtract.setOnClickListener(v -> {
-            int count = product.getQuantity();
-            if (count <= 1) {
+            if (Integer.parseInt(holder.mItemCartBinding.tvCount.getText().toString()) == 1)
                 return;
-            }
-            int newCount = count - 1;
-            product.setQuantity(newCount);
+            int newCount = Integer.parseInt(holder.mItemCartBinding.tvCount.getText().toString()) - 1;
+            holder.mItemCartBinding.tvCount.setText(String.valueOf(newCount));
 
-            // Gọi phương thức xử lý sự kiện updateItemProduct trong IClickListener
-            iClickListener.updateItemProduct(product, holder.getAdapterPosition());
+            int totalPrice = (cartProductView.getPrice() / cartProductView.getQuantity()) * newCount;
+            cartProductView.setQuantity(newCount);
+            cartProductView.setPrice(totalPrice);
+
+            // Cập nhật giá trị của strFoodPriceCart
+            strFoodPriceCart[0] = totalPrice + Constant.CURRENCY;
+            holder.mItemCartBinding.tvFoodPriceCart.setText(strFoodPriceCart[0]);
+
+            iClickListener.updateItemFood(cartProductView, holder.getAdapterPosition());
+            updateCart(cartProductView);
         });
 
         holder.mItemCartBinding.tvAdd.setOnClickListener(v -> {
-            int newCount = product.getQuantity() + 1;
-            product.setQuantity(newCount);
+            int newCount = Integer.parseInt(holder.mItemCartBinding.tvCount.getText().toString()) + 1;
+            holder.mItemCartBinding.tvCount.setText(String.valueOf(newCount));
 
-            // Gọi phương thức xử lý sự kiện updateItemProduct trong IClickListener
-            iClickListener.updateItemProduct(product, holder.getAdapterPosition());
+            int totalPrice = (cartProductView.getPrice() / cartProductView.getQuantity()) * newCount;
+            cartProductView.setQuantity(newCount);
+            cartProductView.setPrice(totalPrice);
+
+            // Cập nhật giá trị của strFoodPriceCart
+            strFoodPriceCart[0] = totalPrice + Constant.CURRENCY;
+            holder.mItemCartBinding.tvFoodPriceCart.setText(strFoodPriceCart[0]);
+
+            iClickListener.updateItemFood(cartProductView, holder.getAdapterPosition());
+            updateCart(cartProductView);
         });
 
-        holder.mItemCartBinding.tvDelete.setOnClickListener(v -> {
-            // Gọi phương thức xử lý sự kiện clickDeleteProduct trong IClickListener
-            iClickListener.clickDeleteProduct(product, holder.getAdapterPosition());
-        });
+
+
+        holder.mItemCartBinding.tvDelete.setOnClickListener(v
+                -> iClickListener.clickDeteteFood(cartProductView, holder.getAdapterPosition()));
+
+
+
     }
 
     @Override
     public int getItemCount() {
-        return null == mListProducts ? 0 : mListProducts.size();
+        return mListCartProducts == null ? 0 : mListCartProducts.size();
+    }
+
+    public void setData(List<CartProductViewDTO> cartProducts) {
+        mListCartProducts = cartProducts;
+        notifyDataSetChanged();
     }
 
     public static class CartViewHolder extends RecyclerView.ViewHolder {
@@ -90,5 +128,41 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             super(itemCartBinding.getRoot());
             this.mItemCartBinding = itemCartBinding;
         }
+    }
+
+    private void updateCart(CartProductViewDTO cartProductViewDTO)
+    {
+        ApiService mApiService = RetrofitBase.getInstance();
+        Call<Void> call = mApiService.updateCart(customerId, cartProductViewDTO.getProductId(), cartProductViewDTO.getQuantity(), cartProductViewDTO.getPrice());
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // Handle success
+                    Log.i("Cart Update", "Cart successfully updated.");
+                } else {
+                    // Handle failure
+                    String errorBody = null;
+                    if (response.errorBody() != null) {
+                        try {
+                            errorBody = response.errorBody().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Log.e("Cart Update", "Failed to update cart. Server response: " + response.code() + ", Error body: " + errorBody);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Handle execution failure
+                Log.e("Cart Update", "Error updating cart.", t);
+                if (t != null) {
+                    Log.e("Cart Update", "Error message: " + t.getMessage());
+                }
+            }
+        });
     }
 }

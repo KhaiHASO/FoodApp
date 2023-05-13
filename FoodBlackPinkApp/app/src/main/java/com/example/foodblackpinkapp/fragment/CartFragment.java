@@ -1,6 +1,5 @@
 package com.example.foodblackpinkapp.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,26 +8,25 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.example.foodblackpinkapp.R;
-import com.example.foodblackpinkapp.activity.MainActivity;
 import com.example.foodblackpinkapp.adapter.CartAdapter;
 import com.example.foodblackpinkapp.constant.Constant;
-import com.example.foodblackpinkapp.constant.GlobalFunction;
+import com.example.foodblackpinkapp.database.ApiService;
+import com.example.foodblackpinkapp.database.RetrofitBase;
 import com.example.foodblackpinkapp.databinding.FragmentCartBinding;
-import com.example.foodblackpinkapp.model.Order;
+import com.example.foodblackpinkapp.model.CartProductViewDTO;
 import com.example.foodblackpinkapp.model.Product;
-import com.example.foodblackpinkapp.utils.StringUtil;
-import com.example.foodblackpinkapp.utils.Utils;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +37,7 @@ public class CartFragment extends BaseFragment {
 
     private FragmentCartBinding mFragmentCartBinding;
     private CartAdapter mCartAdapter;
-    private List<Product> mListFoodCart;
+    private List<CartProductViewDTO> mListCartProduct;
     private int mAmount;
 
     @Nullable
@@ -60,11 +58,62 @@ public class CartFragment extends BaseFragment {
 
     private void displayListFoodInCart() {
         // Hiển thị danh sách sản phẩm trong giỏ hàng
+        if (getActivity() == null) {
+            return;
+        }
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        mFragmentCartBinding.rcvFoodCart.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        mFragmentCartBinding.rcvFoodCart.addItemDecoration(itemDecoration);
+
+        initDataFoodCart();
     }
 
     private void initDataFoodCart() {
-        // Khởi tạo dữ liệu sản phẩm trong giỏ hàng
+        String customerId = ShareRefManager.getInstance(requireContext().getApplicationContext()).getCustomer().getCustomerId();
+        Log.d("CUSID", customerId);
+        ApiService apiService = RetrofitBase.getInstance();
+        Call<List<CartProductViewDTO>> call = apiService.getCartProductsByCustomerId(customerId);
+        call.enqueue(new Callback<List<CartProductViewDTO>>() {
+            @Override
+            public void onResponse(Call<List<CartProductViewDTO>> call, Response<List<CartProductViewDTO>> response) {
+                if (response.isSuccessful()) {
+                    mListCartProduct = response.body();
+                    if (mListCartProduct != null && !mListCartProduct.isEmpty()) {
+                        // Xử lý khi nhận được danh sách CartProductViewDTO từ API
+
+                        // Khởi tạo và gán adapter mới
+                        mCartAdapter = new CartAdapter(mListCartProduct, new CartAdapter.IClickListener() {
+                            @Override
+                            public void clickDeteteFood(CartProductViewDTO cartProductView, int position) {
+
+
+                            }
+
+                            @Override
+                            public void updateItemFood(CartProductViewDTO cartProductView, int position) {
+                                calculateTotalPrice();
+
+                            }
+                        }, customerId);
+                        mFragmentCartBinding.rcvFoodCart.setAdapter(mCartAdapter);
+
+                        calculateTotalPrice();
+                    }
+                } else {
+                    // Xử lý khi yêu cầu API thất bại
+                    Log.d("CartError", "Failed to retrieve cart products");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CartProductViewDTO>> call, Throwable t) {
+                // Xử lý khi yêu cầu API gặp lỗi
+                Log.d("CartError", "API request failed: " + t.getMessage());
+            }
+        });
     }
+
 
     private void clearCart() {
         // Xóa giỏ hàng
@@ -72,6 +121,22 @@ public class CartFragment extends BaseFragment {
 
     private void calculateTotalPrice() {
         // Tính toán tổng giá trị đơn hàng
+        //List<Food> listFoodCart = FoodDatabase.getInstance(getActivity()).foodDAO().getListFoodCart();
+        if (mListCartProduct == null || mListCartProduct.isEmpty()) {
+            String strZero = 0 + Constant.CURRENCY;
+            mFragmentCartBinding.tvTotalPrice.setText(strZero);
+            mAmount = 0;
+            return;
+        }
+
+        int totalPrice = 0;
+        for (CartProductViewDTO productcart : mListCartProduct) {
+            totalPrice = totalPrice + productcart.getPrice();
+        }
+
+        String strTotalPrice = totalPrice + Constant.CURRENCY;
+        mFragmentCartBinding.tvTotalPrice.setText(strTotalPrice);
+        mAmount = totalPrice;
     }
 
     private void deleteFoodFromCart(Product food, int position) {

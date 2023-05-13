@@ -1,35 +1,22 @@
 package com.example.foodblackpinkapp.model;
 
-import androidx.annotation.NonNull;
-
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-
-public class Cart implements Serializable {
-    @SerializedName("cartId")
+public class CartProductViewDTO {
     private int cartId;
-
-    @SerializedName("customerId")
     private String customerId;
-
-    @SerializedName("productId")
     private int productId;
-
-    @SerializedName("quantity")
     private int quantity;
-    @SerializedName("price")
+    private String name;
     private int price;
+    private String image;
+    private int discount;
 
-    public int getPrice() {
-        return price;
+    public int getDiscount() {
+        return discount;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
-
-
 
     public int getCartId() {
         return cartId;
@@ -63,15 +50,40 @@ public class Cart implements Serializable {
         this.quantity = quantity;
     }
 
-    @NonNull
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
     @Override
     public String toString() {
-        return "Cart{" +
+        return "CartProductViewDTO{" +
                 "cartId=" + cartId +
                 ", customerId='" + customerId + '\'' +
                 ", productId=" + productId +
                 ", quantity=" + quantity +
-                ", price="+ price +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", image='" + image + '\'' +
+                ", discount=" + discount +
                 '}';
     }
 }
