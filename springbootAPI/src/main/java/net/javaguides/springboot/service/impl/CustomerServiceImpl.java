@@ -7,6 +7,7 @@ import net.javaguides.springboot.service.CustomerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -50,5 +51,11 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteCustomer(String id) {
         Customer existingCustomer = getCustomerById(id);
         customerRepository.delete(existingCustomer);
+    }
+
+    @Override
+    public Customer login(String username, String password) {
+        Optional<Customer> optionalCustomer = customerRepository.findCustomerByUsernameAndPassword(username, password);
+        return optionalCustomer.orElse(null);
     }
 }

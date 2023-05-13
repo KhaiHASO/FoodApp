@@ -55,5 +55,19 @@ public class CustomerController {
         return new ResponseEntity<String>("Customer deleted successfully!.", HttpStatus.OK);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<Customer> login(@RequestBody Customer loginRequest) {
+        String username = loginRequest.getCustomerId();
+        String password = loginRequest.getPassword();
+
+        Customer customer = customerService.login(username, password);
+
+        if (customer != null) {
+            return ResponseEntity.ok(customer);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
 
 }
