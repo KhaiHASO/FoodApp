@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.foodblackpinkapp.fragment.AccountFragment;
+import com.example.foodblackpinkapp.fragment.CartFragment;
 import com.example.foodblackpinkapp.fragment.HomeFragment;
 
 public class MainViewPagerAdapter extends FragmentStateAdapter {
@@ -22,7 +23,7 @@ public class MainViewPagerAdapter extends FragmentStateAdapter {
                 return new HomeFragment();
 
             case 1:
-                //return new CartFragment();
+                return new CartFragment();
 
             case 2:
                 //return new FeedbackFragment();

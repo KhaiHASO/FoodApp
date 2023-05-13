@@ -186,46 +186,24 @@ public class FoodDetailActivity extends BaseActivity {
         String strTotalPrice = totalPrice + Constant.CURRENCY;
         tvFoodPriceCart.setText(strTotalPrice);
 
-       // mProduct.setCount(1);
-        //mProduct.setTotalPrice(totalPrice);
-
         tvSubtractCount.setOnClickListener(v -> {
-            int count = Integer.parseInt(tvCount.getText().toString());
-            if (count <= 1) {
-                return;
-            }
-            int newCount = Integer.parseInt(tvCount.getText().toString()) - 1;
-            tvCount.setText(String.valueOf(newCount));
-
-            int totalPrice1 = mProduct.getRealPrice() * newCount;
-            String strTotalPrice1 = totalPrice1 + Constant.CURRENCY;
-            tvFoodPriceCart.setText(strTotalPrice1);
-
-            //mProduct.setCount(newCount);
-            //mProduct.setTotalPrice(totalPrice1);
+            // Giảm số lượng sản phẩm trong giỏ hàng
         });
 
         tvAddCount.setOnClickListener(v -> {
-            int newCount = Integer.parseInt(tvCount.getText().toString()) + 1;
-            tvCount.setText(String.valueOf(newCount));
-
-            int totalPrice2 = mProduct.getRealPrice() * newCount;
-            String strTotalPrice2 = totalPrice2 + Constant.CURRENCY;
-            tvFoodPriceCart.setText(strTotalPrice2);
-
-           // mProduct.setCount(newCount);
-           // mProduct.setTotalPrice(totalPrice2);
+            // Tăng số lượng sản phẩm trong giỏ hàng
         });
 
         tvCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
         tvAddCart.setOnClickListener(v -> {
-            //FoodDatabase.getInstance(FoodDetailActivity.this).foodDAO().insertFood(mProduct);
+            // Thêm sản phẩm vào giỏ hàng
             bottomSheetDialog.dismiss();
             setStatusButtonAddToCart();
-           // EventBus.getDefault().post(new ReloadListCartEvent());
+            // Gọi phương thức backend để thêm sản phẩm vào giỏ hàng
         });
 
         bottomSheetDialog.show();
     }
+
 }

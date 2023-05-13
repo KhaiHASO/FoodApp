@@ -2,7 +2,10 @@ package com.example.foodblackpinkapp.database;
 
 import android.content.Intent;
 
+import com.example.foodblackpinkapp.model.Cart;
 import com.example.foodblackpinkapp.model.Customer;
+import com.example.foodblackpinkapp.model.Order;
+import com.example.foodblackpinkapp.model.OrderDetail;
 import com.example.foodblackpinkapp.model.Product;
 import com.example.foodblackpinkapp.model.ProductDetail;
 
@@ -28,5 +31,14 @@ public interface ApiService {
 
     @POST("customers")
     Call<Customer> register(@Body Customer registerRequest);
+
+    @POST("carts")
+    Call<Cart> addToCart(@Body Cart cart);
+
+    @POST("orders")
+    Call<Order> placeOrder(@Body Order order);
+
+    @POST("order-details")
+    Call<OrderDetail> addOrderDetail(@Body OrderDetail orderDetail);
 
 }
