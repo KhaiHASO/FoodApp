@@ -188,10 +188,32 @@ public class FoodDetailActivity extends BaseActivity {
 
         tvSubtractCount.setOnClickListener(v -> {
             // Giảm số lượng sản phẩm trong giỏ hàng
+            int count = Integer.parseInt(tvCount.getText().toString());
+            if (count <= 1) {
+                return;
+            }
+            int newCount = Integer.parseInt(tvCount.getText().toString()) - 1;
+            tvCount.setText(String.valueOf(newCount));
+
+            int totalPrice1 = mProduct.getRealPrice() * newCount;
+            String strTotalPrice1 = totalPrice1 + Constant.CURRENCY;
+            tvFoodPriceCart.setText(strTotalPrice1);
+
+            //mProduct.setCount(newCount);
+            //mProduct.setTotalPrice(totalPrice1);
         });
 
         tvAddCount.setOnClickListener(v -> {
             // Tăng số lượng sản phẩm trong giỏ hàng
+            int newCount = Integer.parseInt(tvCount.getText().toString()) + 1;
+            tvCount.setText(String.valueOf(newCount));
+
+            int totalPrice2 = mProduct.getRealPrice() * newCount;
+            String strTotalPrice2 = totalPrice2 + Constant.CURRENCY;
+            tvFoodPriceCart.setText(strTotalPrice2);
+
+            //mFood.setCount(newCount);
+            //mFood.setTotalPrice(totalPrice2);
         });
 
         tvCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());

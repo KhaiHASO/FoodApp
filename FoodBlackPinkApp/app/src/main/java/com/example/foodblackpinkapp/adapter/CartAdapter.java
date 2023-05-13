@@ -15,17 +15,17 @@ import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
-    private final List<Product> mListFoods;
+    private final List<Product> mListProducts;
     private final IClickListener iClickListener;
 
     public interface IClickListener {
-        void clickDeteteFood(Product food, int position);
+        void clickDeleteProduct(Product product, int position);
 
-        void updateItemFood(Product food, int position);
+        void updateItemProduct(Product product, int position);
     }
 
-    public CartAdapter(List<Product> mListFoods, IClickListener iClickListener) {
-        this.mListFoods = mListFoods;
+    public CartAdapter(List<Product> mListProducts, IClickListener iClickListener) {
+        this.mListProducts = mListProducts;
         this.iClickListener = iClickListener;
     }
 
@@ -38,55 +38,48 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        Product food = mListFoods.get(position);
-        if (food == null) {
+        Product product = mListProducts.get(position);
+        if (product == null) {
             return;
         }
-        GlideUtils.loadUrl(food.getImage(), holder.mItemCartBinding.imgFoodCart);
-        holder.mItemCartBinding.tvFoodNameCart.setText(food.getName());
+        GlideUtils.loadUrl(product.getImage(), holder.mItemCartBinding.imgFoodCart);
+        holder.mItemCartBinding.tvFoodNameCart.setText(product.getName());
 
-
-        String strFoodPriceCart = food.getPrice() + Constant.CURRENCY;
-        if (food.getDiscount() > 0) {
-            strFoodPriceCart = food.getRealPrice() + Constant.CURRENCY;
+        String strProductPriceCart = product.getPrice() + Constant.CURRENCY;
+        if (product.getDiscount() > 0) {
+            strProductPriceCart = product.getRealPrice() + Constant.CURRENCY;
         }
-        holder.mItemCartBinding.tvFoodPriceCart.setText(strFoodPriceCart);
-       // holder.mItemCartBinding.tvCount.setText(String.valueOf(food.getCount()));
+        holder.mItemCartBinding.tvFoodPriceCart.setText(strProductPriceCart);
 
         holder.mItemCartBinding.tvSubtract.setOnClickListener(v -> {
-            String strCount = holder.mItemCartBinding.tvCount.getText().toString();
-            int count = Integer.parseInt(strCount);
+            int count = product.getQuantity();
             if (count <= 1) {
                 return;
             }
             int newCount = count - 1;
-            holder.mItemCartBinding.tvCount.setText(String.valueOf(newCount));
+            product.setQuantity(newCount);
 
-            int totalPrice = food.getRealPrice() * newCount;
-            //food.setCount(newCount);
-           // food.setTotalPrice(totalPrice);
-
-            iClickListener.updateItemFood(food, holder.getAdapterPosition());
+            // Gọi phương thức xử lý sự kiện updateItemProduct trong IClickListener
+            iClickListener.updateItemProduct(product, holder.getAdapterPosition());
         });
 
         holder.mItemCartBinding.tvAdd.setOnClickListener(v -> {
-            int newCount = Integer.parseInt(holder.mItemCartBinding.tvCount.getText().toString()) + 1;
-            holder.mItemCartBinding.tvCount.setText(String.valueOf(newCount));
+            int newCount = product.getQuantity() + 1;
+            product.setQuantity(newCount);
 
-            int totalPrice = food.getRealPrice() * newCount;
-           // food.setCount(newCount);
-            //food.setTotalPrice(totalPrice);
-
-            iClickListener.updateItemFood(food, holder.getAdapterPosition());
+            // Gọi phương thức xử lý sự kiện updateItemProduct trong IClickListener
+            iClickListener.updateItemProduct(product, holder.getAdapterPosition());
         });
 
-        holder.mItemCartBinding.tvDelete.setOnClickListener(v
-                -> iClickListener.clickDeteteFood(food, holder.getAdapterPosition()));
+        holder.mItemCartBinding.tvDelete.setOnClickListener(v -> {
+            // Gọi phương thức xử lý sự kiện clickDeleteProduct trong IClickListener
+            iClickListener.clickDeleteProduct(product, holder.getAdapterPosition());
+        });
     }
 
     @Override
     public int getItemCount() {
-        return null == mListFoods ? 0 : mListFoods.size();
+        return null == mListProducts ? 0 : mListProducts.size();
     }
 
     public static class CartViewHolder extends RecyclerView.ViewHolder {
