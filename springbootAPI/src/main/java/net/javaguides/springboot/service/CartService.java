@@ -1,6 +1,7 @@
 package net.javaguides.springboot.service;
 
 import net.javaguides.springboot.model.Cart;
+import net.javaguides.springboot.model.CartProductViewDTO;
 
 import java.util.List;
 
@@ -10,6 +11,6 @@ public interface CartService {
     Cart getCartById(int id);
     List<Cart> getCartsByCustomerId(String customerId);
     Cart updateCart(Cart cart, int id);
-    void deleteCart(int id);
-    void updateCart(Integer quantity, Integer price, String customerId, Integer productId);
+    void deleteByCustomerIdAndProductId(String customerId, Integer productId);
+    void updateCart(CartProductViewDTO cartProductViewDTO);
 }

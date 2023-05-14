@@ -17,8 +17,14 @@ import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
 import com.example.foodblackpinkapp.utils.GlideUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,7 +33,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     private List<CartProductViewDTO> mListCartProducts;
     private final IClickListener iClickListener;
-    private final String customerId;
 
     public interface IClickListener {
         void clickDeteteFood(CartProductViewDTO cartProductView, int position);
@@ -35,10 +40,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         void updateItemFood(CartProductViewDTO cartProductView, int position);
     }
 
-    public CartAdapter(List<CartProductViewDTO> mListCartProducts, IClickListener iClickListener, String customerId) {
+    public CartAdapter(List<CartProductViewDTO> mListCartProducts, IClickListener iClickListener) {
         this.mListCartProducts = mListCartProducts;
         this.iClickListener = iClickListener;
-        this.customerId = customerId;
     }
 
     @NonNull
@@ -102,10 +106,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         });
 
 
-
         holder.mItemCartBinding.tvDelete.setOnClickListener(v
                 -> iClickListener.clickDeteteFood(cartProductView, holder.getAdapterPosition()));
-
 
 
     }
@@ -130,19 +132,19 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         }
     }
 
-    private void updateCart(CartProductViewDTO cartProductViewDTO)
-    {
+    private void updateCart(CartProductViewDTO cartProductViewDTO) {
         ApiService mApiService = RetrofitBase.getInstance();
-        Call<Void> call = mApiService.updateCart(customerId, cartProductViewDTO.getProductId(), cartProductViewDTO.getQuantity(), cartProductViewDTO.getPrice());
+        Log.i("Cart Update", "Cart Product View DTO: " + cartProductViewDTO.toString());
 
+        Call<Void> call = mApiService.updateCart(cartProductViewDTO);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    // Handle success
+                    // Xử lý thành công
                     Log.i("Cart Update", "Cart successfully updated.");
                 } else {
-                    // Handle failure
+                    // Xử lý lỗi
                     String errorBody = null;
                     if (response.errorBody() != null) {
                         try {
@@ -157,7 +159,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                // Handle execution failure
+                // Xử lý lỗi kết nối
                 Log.e("Cart Update", "Error updating cart.", t);
                 if (t != null) {
                     Log.e("Cart Update", "Error message: " + t.getMessage());

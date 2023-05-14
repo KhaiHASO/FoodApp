@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.example.foodblackpinkapp.model.CartProductViewDTO;
 import com.example.foodblackpinkapp.model.Product;
 import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -86,6 +88,7 @@ public class CartFragment extends BaseFragment {
                         mCartAdapter = new CartAdapter(mListCartProduct, new CartAdapter.IClickListener() {
                             @Override
                             public void clickDeteteFood(CartProductViewDTO cartProductView, int position) {
+                                deleteFoodFromCart(cartProductView,position);
 
 
                             }
@@ -95,7 +98,7 @@ public class CartFragment extends BaseFragment {
                                 calculateTotalPrice();
 
                             }
-                        }, customerId);
+                        });
                         mFragmentCartBinding.rcvFoodCart.setAdapter(mCartAdapter);
 
                         calculateTotalPrice();
@@ -139,9 +142,45 @@ public class CartFragment extends BaseFragment {
         mAmount = totalPrice;
     }
 
-    private void deleteFoodFromCart(Product food, int position) {
-        // Xóa sản phẩm khỏi giỏ hàng
+    private void deleteFoodFromCart(CartProductViewDTO cartProductViewDTOm, int position) {
+        ApiService mApiService = RetrofitBase.getInstance();
+        Log.i("Cart Delete", "Cart Product View DTO: " + cartProductViewDTOm.toString());
+
+        Call<Void> call = mApiService.deleteCart(cartProductViewDTOm.getCustomerId(),cartProductViewDTOm.getProductId());
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // Xử lý thành công
+                    Log.i("Cart Update", "Cart successfully updated.");
+                    mListCartProduct.remove(position);
+                    mCartAdapter.notifyItemRemoved(position);
+                    calculateTotalPrice();
+                } else {
+                    // Xử lý lỗi
+                    String errorBody = null;
+                    if (response.errorBody() != null) {
+                        try {
+                            errorBody = response.errorBody().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Log.e("Cart Update", "Failed to update cart. Server response: " + response.code() + ", Error body: " + errorBody);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Xử lý lỗi kết nối
+                Log.e("Cart Update", "Error updating cart.", t);
+                if (t != null) {
+                    Log.e("Cart Update", "Error message: " + t.getMessage());
+                }
+            }
+        });
     }
+
 
     public void onClickOrderCart() {
         // Xử lý sự kiện khi người dùng nhấp vào nút Đặt hàng
@@ -152,9 +191,25 @@ public class CartFragment extends BaseFragment {
         return null;
     }
 
+    private Handler mHandler = new Handler();
+    private Runnable mRefreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            initDataFoodCart(); // Lấy lại dữ liệu
+            mHandler.postDelayed(this, 5000); // Lặp lại sau 5 giây
+        }
+    };
+
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Hủy đăng ký EventBus (nếu có)
+    public void onResume() {
+        super.onResume();
+        mHandler.post(mRefreshRunnable); // Bắt đầu làm mới khi Fragment hiển thị
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mHandler.removeCallbacks(mRefreshRunnable); // Dừng làm mới khi Fragment không hiển thị
+    }
+
 }

@@ -1,11 +1,13 @@
 package net.javaguides.springboot.controller;
 import net.javaguides.springboot.model.Cart;
+import net.javaguides.springboot.model.CartProductViewDTO;
 import net.javaguides.springboot.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/carts")
@@ -52,23 +54,33 @@ public class CartController {
     }
 
     // delete cart REST API
-    // http://localhost:8080/api/carts/1
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteCart(@PathVariable("id") int id) {
-
-        // delete cart from DB
-        cartService.deleteCart(id);
-
-        return new ResponseEntity<>("Cart deleted successfully!.", HttpStatus.OK);
+    // http://localhost:8080/api/carts/{customerId}/{productId}
+    @DeleteMapping("/delete/{customerId}/{productId}")
+    public ResponseEntity<String> deleteCart(@PathVariable String customerId, @PathVariable Integer productId) {
+        try {
+            cartService.deleteByCustomerIdAndProductId(customerId, productId);
+            return ResponseEntity.ok("Cart deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to delete cart: " + e.getMessage());
+        }
     }
 
-    @PutMapping("/update/{customerId}/{productId}")
-    public void updateCart(@PathVariable String customerId,
-                           @PathVariable Integer productId,
-                           @RequestParam Integer quantity,
-                           @RequestParam Integer price) {
-        cartService.updateCart(quantity, price, customerId, productId);
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateCart(@RequestBody CartProductViewDTO cartProductViewDTO) {
+        try {
+            cartService.updateCart(cartProductViewDTO);
+
+            return ResponseEntity.ok("Cart updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update cart: " + e.getMessage());
+        }
     }
+
+
+
 
 }
 

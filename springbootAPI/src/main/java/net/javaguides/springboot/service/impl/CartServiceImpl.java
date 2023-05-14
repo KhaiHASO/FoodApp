@@ -2,6 +2,7 @@ package net.javaguides.springboot.service.impl;
 
 import net.javaguides.springboot.exception.ResourceNotFoundException;
 import net.javaguides.springboot.model.Cart;
+import net.javaguides.springboot.model.CartProductViewDTO;
 import net.javaguides.springboot.repository.CartRepository;
 import net.javaguides.springboot.service.CartService;
 import org.springframework.stereotype.Service;
@@ -51,14 +52,15 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteCart(int id) {
-        Cart existingCart = getCartById(id);
-        cartRepository.delete(existingCart);
+    public void deleteByCustomerIdAndProductId(String customerId, Integer productId) {
+        cartRepository.deleteByCustomerIdAndProductId(customerId,productId);
+
     }
 
+
     @Override
-    public void updateCart(Integer quantity, Integer price, String customerId, Integer productId) {
-        cartRepository.updateCart(quantity, price, customerId, productId);
+    public void updateCart(CartProductViewDTO cartProductViewDTO) {
+         cartRepository.updateCart(cartProductViewDTO);
     }
 
 
