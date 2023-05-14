@@ -63,5 +63,10 @@ public class CartServiceImpl implements CartService {
          cartRepository.updateCart(cartProductViewDTO);
     }
 
+    @Override
+    public void emptyCart(String customerId) {
+        cartRepository.emptyCart(customerId);
+    }
+
 
 }

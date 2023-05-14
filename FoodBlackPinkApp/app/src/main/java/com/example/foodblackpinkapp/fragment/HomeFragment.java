@@ -60,6 +60,8 @@ public class HomeFragment extends BaseFragment {
                 return;
             }
             mFragmentHomeBinding.viewpager2.setCurrentItem(mFragmentHomeBinding.viewpager2.getCurrentItem() + 1);
+            getListProductFromApi("");
+
         }
     };
 
@@ -92,10 +94,6 @@ public class HomeFragment extends BaseFragment {
                                 mListProduct.add(0, product);
                             }
                         }
-                    }
-
-                    for (Product product : mListProduct) {
-                        Log.d("HomeFragment", "Product: " + product.toString());
                     }
                     displayListProductPopular();
                     displayListProductSuggest();

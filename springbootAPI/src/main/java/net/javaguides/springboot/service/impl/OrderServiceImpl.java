@@ -45,4 +45,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = getOrderById(orderId);
         orderRepository.delete(order);
     }
+
+    @Override
+    public void createOrderFromCart(String customerId) {
+        orderRepository.createOrderFromCart(customerId);
+    }
 }

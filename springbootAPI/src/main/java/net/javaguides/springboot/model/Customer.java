@@ -31,4 +31,7 @@ public class Customer {
     @Column(name = "role_id")
     private int roleId;
 
+    @Column(name = "address")
+    private int address;
+
 }

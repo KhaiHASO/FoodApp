@@ -2,22 +2,28 @@ package net.javaguides.springboot.controller;
 import net.javaguides.springboot.model.Cart;
 import net.javaguides.springboot.model.CartProductViewDTO;
 import net.javaguides.springboot.service.CartService;
+import net.javaguides.springboot.service.OrderDetailService;
+import net.javaguides.springboot.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/carts")
 public class CartController {
 
     private final CartService cartService;
+    private final OrderDetailService orderDetailService;
+    private final OrderService orderService;
 
-    public CartController(CartService cartService) {
+
+    public CartController(CartService cartService, OrderDetailService orderDetailService, OrderService orderService) {
         super();
         this.cartService = cartService;
+        this.orderDetailService = orderDetailService;
+        this.orderService = orderService;
     }
 
     // create cart REST API
@@ -79,8 +85,23 @@ public class CartController {
         }
     }
 
+    @PostMapping("/checkout/{customerId}")
+    public ResponseEntity<String> createOrder(@PathVariable String customerId) {
+        try {
+            // Bước 2: Tạo đơn đặt hàng từ giỏ hàng
+            orderService.createOrderFromCart(customerId);
 
+            // Bước 3: Thêm chi tiết đơn hàng từ giỏ hàng
+            orderDetailService.createOrderDetailsFromCart(customerId);
 
+            // Bước 4: Xóa giỏ hàng sau khi hoàn tất đặt hàng
+            cartService.emptyCart(customerId);
 
+            return ResponseEntity.ok("Order created and cart emptied successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to create order and empty cart: " + e.getMessage());
+        }
+    }
 }
 

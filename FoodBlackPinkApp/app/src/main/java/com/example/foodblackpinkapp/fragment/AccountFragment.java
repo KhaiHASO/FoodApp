@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +25,7 @@ import com.example.foodblackpinkapp.activity.LoginActivity;
 public class AccountFragment extends Fragment {
 
     private TextView customerId, email, phone, name;
-    private Button btnLogout;
+    private Button btnLogout, btnOrder;
     private ImageView imageViewprofile;
 
     public AccountFragment() {
@@ -42,6 +44,8 @@ public class AccountFragment extends Fragment {
         email = view.findViewById(R.id.textViewEmail);
         phone = view.findViewById(R.id.textViewPhone);
         btnLogout = view.findViewById(R.id.btnLogOut);
+
+
         imageViewprofile = view.findViewById(R.id.imageViewProfile);
 
         Customer customer = ShareRefManager.getInstance(getActivity()).getCustomer();
@@ -62,7 +66,6 @@ public class AccountFragment extends Fragment {
                 getActivity().finish();
             }
         });
-
         return view;
     }
 }

@@ -48,4 +48,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
         orderDetailRepository.delete(orderDetail);
     }
+
+    @Override
+    public void createOrderDetailsFromCart(String customerId) {
+        orderDetailRepository.createOrderDetailsFromCart(customerId);
+    }
 }

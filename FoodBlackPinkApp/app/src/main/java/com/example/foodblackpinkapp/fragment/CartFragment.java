@@ -1,5 +1,6 @@
 package com.example.foodblackpinkapp.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,15 +14,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.foodblackpinkapp.R;
 import com.example.foodblackpinkapp.adapter.CartAdapter;
 import com.example.foodblackpinkapp.constant.Constant;
+import com.example.foodblackpinkapp.constant.GlobalFunction;
 import com.example.foodblackpinkapp.database.ApiService;
 import com.example.foodblackpinkapp.database.RetrofitBase;
 import com.example.foodblackpinkapp.databinding.FragmentCartBinding;
 import com.example.foodblackpinkapp.model.CartProductViewDTO;
+import com.example.foodblackpinkapp.model.Order;
 import com.example.foodblackpinkapp.model.Product;
 import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
+import com.example.foodblackpinkapp.utils.StringUtil;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,7 +81,6 @@ public class CartFragment extends BaseFragment {
 
     private void initDataFoodCart() {
         String customerId = ShareRefManager.getInstance(requireContext().getApplicationContext()).getCustomer().getCustomerId();
-        Log.d("CUSID", customerId);
         ApiService apiService = RetrofitBase.getInstance();
         Call<List<CartProductViewDTO>> call = apiService.getCartProductsByCustomerId(customerId);
         call.enqueue(new Callback<List<CartProductViewDTO>>() {
@@ -183,9 +190,46 @@ public class CartFragment extends BaseFragment {
 
 
     public void onClickOrderCart() {
-        // Xử lý sự kiện khi người dùng nhấp vào nút Đặt hàng
-    }
+        if (getActivity() == null) {
+            return;
+        }
 
+        if (mListCartProduct == null || mListCartProduct.isEmpty()) {
+            return;
+        }
+
+        @SuppressLint("InflateParams") View viewDialog = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_order, null);
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+        bottomSheetDialog.setContentView(viewDialog);
+        bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        // init ui
+        TextView tvFoodsOrder = viewDialog.findViewById(R.id.tv_foods_order);
+        TextView tvPriceOrder = viewDialog.findViewById(R.id.tv_price_order);
+        TextView edtNameOrder = viewDialog.findViewById(R.id.edt_name_order);
+        TextView edtPhoneOrder = viewDialog.findViewById(R.id.edt_phone_order);
+        TextView edtAddressOrder = viewDialog.findViewById(R.id.edt_address_order);
+        TextView tvCancelOrder = viewDialog.findViewById(R.id.tv_cancel_order);
+        TextView tvCreateOrder = viewDialog.findViewById(R.id.tv_create_order);
+
+        // Set data
+        tvFoodsOrder.setText(getStringListFoodsOrder());
+        tvPriceOrder.setText(mFragmentCartBinding.tvTotalPrice.getText().toString());
+
+        // Set listener
+        tvCancelOrder.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        tvCreateOrder.setOnClickListener(v -> {
+            String strName = edtNameOrder.getText().toString().trim();
+            String strPhone = edtPhoneOrder.getText().toString().trim();
+            String strAddress = edtAddressOrder.getText().toString().trim();
+
+
+        });
+
+        bottomSheetDialog.show();
+    }
     private String getStringListFoodsOrder() {
         // Lấy danh sách sản phẩm trong đơn hàng dạng chuỗi
         return null;

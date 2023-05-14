@@ -63,11 +63,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.mItemCartBinding.tvFoodNameCart.setText(cartProductView.getName());
 
         final String[] strFoodPriceCart = {cartProductView.getPrice() + Constant.CURRENCY};
-        // Kiểm tra nếu có giảm giá
-        if (cartProductView.getDiscount() > 0) {
-            int realPrice = cartProductView.getPrice() - (cartProductView.getPrice() * cartProductView.getDiscount() / 100);
-            strFoodPriceCart[0] = realPrice + Constant.CURRENCY;
-        }
         holder.mItemCartBinding.tvFoodPriceCart.setText(strFoodPriceCart[0]);
         holder.mItemCartBinding.tvCount.setText(String.valueOf(cartProductView.getQuantity()));
 

@@ -55,5 +55,8 @@ public interface ApiService {
     @DELETE("carts/delete/{customerId}/{productId}")
     Call<Void> deleteCart(@Path("customerId") String customerId, @Path("productId") Integer productId);
 
+    @POST("carts/checkout/{customerId}")
+    Call<Void> checkoutCart(@Path("customerId")String customerId);
+
 
 }
