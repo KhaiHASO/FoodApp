@@ -2,6 +2,7 @@ package com.example.foodblackpinkapp.database;
 
 import com.example.foodblackpinkapp.model.Cart;
 import com.example.foodblackpinkapp.model.CartProductViewDTO;
+import com.example.foodblackpinkapp.model.Category;
 import com.example.foodblackpinkapp.model.Customer;
 import com.example.foodblackpinkapp.model.Order;
 import com.example.foodblackpinkapp.model.OrderDetail;
@@ -23,6 +24,10 @@ public interface ApiService {
 
     @GET("products")
     Call<List<Product>> getAllProducts();
+    @GET("categories")
+    Call<List<Category>> getCategories();
+    @GET("/api/products/category/{categoryId}")
+    Call<List<Product>> getProductsByCategoryId(@Path("categoryId") int categoryId);
 
     @GET("product-details/product/{productId}")
     Call<List<ProductDetail>> getProductDetailByProductId(@Path("productId") int productId);
