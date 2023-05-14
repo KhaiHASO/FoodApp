@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
@@ -20,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import com.example.foodblackpinkapp.R;
 import com.example.foodblackpinkapp.activity.FoodDetailActivity;
 import com.example.foodblackpinkapp.activity.MainActivity;
+import com.example.foodblackpinkapp.adapter.CategoryAdapter;
 import com.example.foodblackpinkapp.adapter.ProductPopularAdapter;
 import com.example.foodblackpinkapp.adapter.ProductGridAdapter;
 import com.example.foodblackpinkapp.constant.Constant;
@@ -27,9 +29,10 @@ import com.example.foodblackpinkapp.constant.GlobalFunction;
 import com.example.foodblackpinkapp.database.ApiService;
 import com.example.foodblackpinkapp.database.RetrofitBase;
 import com.example.foodblackpinkapp.databinding.FragmentHomeBinding;
+import com.example.foodblackpinkapp.model.Category;
 import com.example.foodblackpinkapp.model.Product;
 import com.example.foodblackpinkapp.utils.StringUtil;
-
+import com.example.foodblackpinkapp.activity.ProductByCategoryActivity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +49,8 @@ public class HomeFragment extends BaseFragment {
     private List<Product> mListProductPopular;
     private ProductPopularAdapter mProductPopularAdapter;
     private ProductGridAdapter mProductGridAdapter;
+    private List<Category> mListCategory;
+    private CategoryAdapter mCategoryAdapter;
     private ApiService mApiService;
 
     private final Handler mHandlerBanner = new Handler();
@@ -68,6 +73,7 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mFragmentHomeBinding = FragmentHomeBinding.inflate(inflater, container, false);
         getListProductFromApi("");
+        getListCategoryFromApi("");
         initSearch();
         return mFragmentHomeBinding.getRoot();
     }
@@ -203,5 +209,52 @@ public class HomeFragment extends BaseFragment {
     @Override
     public CreationExtras getDefaultViewModelCreationExtras() {
         return super.getDefaultViewModelCreationExtras();
+    }
+
+    private void getListCategoryFromApi(String key) {
+        if (getActivity() == null) {
+            return;
+        }
+        mApiService = RetrofitBase.getInstance();
+        mApiService.getCategories().enqueue(new Callback<List<Category>>() {
+            @Override
+            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    mFragmentHomeBinding.layoutContent.setVisibility(View.VISIBLE);
+                    mListCategory = new ArrayList<>();
+                    for (Category category : response.body()) {
+                        if (StringUtil.isEmpty(key)) {
+                            mListCategory.add(0, category);
+                        } else {
+                            if (GlobalFunction.getTextSearch(category.getCategoryName()).toLowerCase().trim()
+                                    .contains(GlobalFunction.getTextSearch(key).toLowerCase().trim())) {
+                                mListCategory.add(0, category);
+                            }
+                        }
+                    }
+
+                    for (Category category : mListCategory) {
+                        Log.d("HomeFragment", "Category: " + category.toString());
+                    }
+                    displayListCategory();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Category>> call, Throwable t) {
+                GlobalFunction.showToastMessage(getActivity(), getString(R.string.msg_get_data_error));
+            }
+        });
+    }
+    private void displayListCategory() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false);
+        mFragmentHomeBinding.rcvCategory.setLayoutManager(linearLayoutManager);
+
+        mCategoryAdapter = new CategoryAdapter(mListCategory,this::goToProductByCategory);
+        mFragmentHomeBinding.rcvCategory.setAdapter(mCategoryAdapter);
+    }
+    private void goToProductByCategory(@NonNull Category category) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("categoryId", category.getCategoryId());
+        GlobalFunction.startActivity(getActivity(), ProductByCategoryActivity.class, bundle);
     }
 }
