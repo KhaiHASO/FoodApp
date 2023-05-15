@@ -56,4 +56,9 @@ public class OrderDetailController {
         return new ResponseEntity<String>("Order detail deleted successfully!.", HttpStatus.OK);
     }
 
+    @PutMapping("/{orderId}/{address}")
+    public ResponseEntity<String> updateOrderAddress(@PathVariable int orderId, @PathVariable String address) {
+        orderDetailService.updateOrderAddress(orderId, address);
+        return ResponseEntity.ok("Order address updated successfully");
+    }
 }

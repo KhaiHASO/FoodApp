@@ -10,11 +10,17 @@ import javax.transaction.Transactional;
 
 public interface OrderRepository extends JpaRepository<Order, Integer>  {
     @Modifying
-    @Transactional
     @Query(value = "INSERT INTO orders (customer_id, order_date, total_price) " +
-            "SELECT customer_id, CURRENT_DATE, SUM(price) " +
+            "SELECT customer_id, null , SUM(price) " +
             "FROM carts WHERE customer_id = :customerId " +
             "GROUP BY customer_id", nativeQuery = true)
-    void createOrderFromCart(@Param("customerId") String customerId);
+    @Transactional
+    int createOrderFromCart(@Param("customerId") String customerId);
+
+    @Query(value = "SELECT MAX(order_id) FROM orders", nativeQuery = true)
+    Integer getLastInsertedOrderId();
+
+
+
 
 }

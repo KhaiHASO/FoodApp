@@ -16,5 +16,9 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
             "FROM carts WHERE customer_id = :customerId", nativeQuery = true)
     void createOrderDetailsFromCart(@Param("customerId") String customerId);
 
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE order_details SET address = :address WHERE order_id = :orderId", nativeQuery = true)
+    void updateOrderAddress(@Param("orderId") int orderId, @Param("address") String address);
 
 }

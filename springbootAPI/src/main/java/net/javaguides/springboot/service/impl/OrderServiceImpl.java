@@ -47,7 +47,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createOrderFromCart(String customerId) {
-        orderRepository.createOrderFromCart(customerId);
+    public int createOrderFromCart(String customerId) {
+        return orderRepository.createOrderFromCart(customerId);
     }
+
+    @Override
+    public Integer getLastInsertedOrderId() {
+        return orderRepository.getLastInsertedOrderId();
+    }
+
 }

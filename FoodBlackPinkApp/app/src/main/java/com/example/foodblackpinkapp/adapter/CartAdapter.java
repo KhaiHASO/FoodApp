@@ -59,13 +59,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             return;
         }
         GlideUtils.loadUrl(cartProductView.getImage(), holder.mItemCartBinding.imgFoodCart);
-
         holder.mItemCartBinding.tvFoodNameCart.setText(cartProductView.getName());
-
         final String[] strFoodPriceCart = {cartProductView.getPrice() + Constant.CURRENCY};
         holder.mItemCartBinding.tvFoodPriceCart.setText(strFoodPriceCart[0]);
         holder.mItemCartBinding.tvCount.setText(String.valueOf(cartProductView.getQuantity()));
-
         holder.mItemCartBinding.tvSubtract.setOnClickListener(v -> {
             if (Integer.parseInt(holder.mItemCartBinding.tvCount.getText().toString()) == 1)
                 return;
@@ -75,11 +72,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             int totalPrice = (cartProductView.getPrice() / cartProductView.getQuantity()) * newCount;
             cartProductView.setQuantity(newCount);
             cartProductView.setPrice(totalPrice);
-
             // Cập nhật giá trị của strFoodPriceCart
             strFoodPriceCart[0] = totalPrice + Constant.CURRENCY;
             holder.mItemCartBinding.tvFoodPriceCart.setText(strFoodPriceCart[0]);
-
             iClickListener.updateItemFood(cartProductView, holder.getAdapterPosition());
             updateCart(cartProductView);
         });
@@ -87,24 +82,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.mItemCartBinding.tvAdd.setOnClickListener(v -> {
             int newCount = Integer.parseInt(holder.mItemCartBinding.tvCount.getText().toString()) + 1;
             holder.mItemCartBinding.tvCount.setText(String.valueOf(newCount));
-
             int totalPrice = (cartProductView.getPrice() / cartProductView.getQuantity()) * newCount;
             cartProductView.setQuantity(newCount);
             cartProductView.setPrice(totalPrice);
-
             // Cập nhật giá trị của strFoodPriceCart
             strFoodPriceCart[0] = totalPrice + Constant.CURRENCY;
             holder.mItemCartBinding.tvFoodPriceCart.setText(strFoodPriceCart[0]);
-
             iClickListener.updateItemFood(cartProductView, holder.getAdapterPosition());
             updateCart(cartProductView);
         });
-
-
         holder.mItemCartBinding.tvDelete.setOnClickListener(v
                 -> iClickListener.clickDeteteFood(cartProductView, holder.getAdapterPosition()));
-
-
     }
 
     @Override
@@ -118,9 +106,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     }
 
     public static class CartViewHolder extends RecyclerView.ViewHolder {
-
         private final ItemCartBinding mItemCartBinding;
-
         public CartViewHolder(ItemCartBinding itemCartBinding) {
             super(itemCartBinding.getRoot());
             this.mItemCartBinding = itemCartBinding;
@@ -130,7 +116,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     private void updateCart(CartProductViewDTO cartProductViewDTO) {
         ApiService mApiService = RetrofitBase.getInstance();
         Log.i("Cart Update", "Cart Product View DTO: " + cartProductViewDTO.toString());
-
         Call<Void> call = mApiService.updateCart(cartProductViewDTO);
         call.enqueue(new Callback<Void>() {
             @Override

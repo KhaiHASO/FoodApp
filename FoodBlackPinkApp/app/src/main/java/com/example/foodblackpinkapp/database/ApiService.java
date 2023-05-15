@@ -61,7 +61,8 @@ public interface ApiService {
     Call<Void> deleteCart(@Path("customerId") String customerId, @Path("productId") Integer productId);
 
     @POST("carts/checkout/{customerId}")
-    Call<Void> checkoutCart(@Path("customerId")String customerId);
+    Call<Integer> checkoutCart(@Path("customerId")String customerId);
 
-
+    @PUT("order-details/{orderId}/{address}")
+    Call<Void> updateOrderAddress(@Path("orderId") int orderId, @Path("address")String address);
 }
