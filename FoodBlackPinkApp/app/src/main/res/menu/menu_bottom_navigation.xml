@@ -12,9 +12,9 @@
         android:title="@string/cart" />
 
     <item
-        android:id="@+id/nav_feedback"
-        android:icon="@drawable/ic_nav_feedback"
-        android:title="@string/feedback" />
+        android:id="@+id/nav_trend"
+        android:icon="@drawable/ic_nav_trend"
+        android:title="@string/trend" />
 
     <item
         android:id="@+id/nav_contact"
