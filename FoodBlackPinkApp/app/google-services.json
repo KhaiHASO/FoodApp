@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "583164160406",
+    "firebase_url": "https://videoshort-e2969-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "videoshort-e2969",
+    "storage_bucket": "videoshort-e2969.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583164160406:android:b350646af10b0521d2d5b7",
+        "android_client_info": {
+          "package_name": "com.example.foodblackpinkapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583164160406-vdiujhmotqijqqnmj0huvvtbqgoa08bp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtUJFlk9rUd3SxZeoEs6e-eFlnYdp_9-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583164160406-vdiujhmotqijqqnmj0huvvtbqgoa08bp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

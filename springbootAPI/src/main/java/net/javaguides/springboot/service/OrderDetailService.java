@@ -12,4 +12,5 @@ public interface OrderDetailService {
     OrderDetail updateOrderDetail(OrderDetail orderDetail, int id);
     void deleteOrderDetail(int id);
     void createOrderDetailsFromCart(String customerId);
+    void updateOrderAddress(int orderId, String address);
 }

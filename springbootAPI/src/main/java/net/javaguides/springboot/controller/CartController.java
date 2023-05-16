@@ -89,19 +89,20 @@ public class CartController {
     public ResponseEntity<String> createOrder(@PathVariable String customerId) {
         try {
             // Bước 2: Tạo đơn đặt hàng từ giỏ hàng
-            orderService.createOrderFromCart(customerId);
-
+           orderService.createOrderFromCart(customerId);
             // Bước 3: Thêm chi tiết đơn hàng từ giỏ hàng
             orderDetailService.createOrderDetailsFromCart(customerId);
 
             // Bước 4: Xóa giỏ hàng sau khi hoàn tất đặt hàng
             cartService.emptyCart(customerId);
+            int orderId= orderService.getLastInsertedOrderId();
 
-            return ResponseEntity.ok("Order created and cart emptied successfully.");
+            return ResponseEntity.ok(String.valueOf(orderId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to create order and empty cart: " + e.getMessage());
+                    .body("Failed to create order: " + e.getMessage());
         }
     }
+
 }
 

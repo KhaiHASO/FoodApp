@@ -26,5 +26,17 @@ public class Order {
     @Column(name = "total_price")
     private int totalPrice;
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", customerId='" + customerId + '\'' +
+                ", orderDate=" + orderDate +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
+
+
+
 
 }

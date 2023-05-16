@@ -25,6 +25,9 @@ public class OrderDetail {
     @Column(name = "order_id")
     private Integer orderId;
 
+    @Column(name = "address")
+    private String address;
+
 
 
 }

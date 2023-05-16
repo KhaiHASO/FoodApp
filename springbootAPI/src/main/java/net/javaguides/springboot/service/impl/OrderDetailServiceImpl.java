@@ -53,4 +53,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     public void createOrderDetailsFromCart(String customerId) {
         orderDetailRepository.createOrderDetailsFromCart(customerId);
     }
+
+    @Override
+    public void updateOrderAddress(int orderId, String address) {
+        orderDetailRepository.updateOrderAddress(orderId,address);
+    }
 }
