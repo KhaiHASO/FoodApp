@@ -9,7 +9,8 @@
     <string name="cart">Giỏ hàng</string>
     <string name="trend">Xu hướng</string>
     <string name="contact">Liên hệ</string>
-    <string name="order">Tôi</string>
+    <string name="account">Tôi</string>
+    <string name="order">Lịch sử đơn hàng</string>
 
     // action
     <string name="action_ok">Đồng ý</string>
