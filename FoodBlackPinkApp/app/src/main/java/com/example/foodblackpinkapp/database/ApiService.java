@@ -5,15 +5,20 @@ import com.example.foodblackpinkapp.model.Cart;
 import com.example.foodblackpinkapp.model.CartProductViewDTO;
 import com.example.foodblackpinkapp.model.Category;
 import com.example.foodblackpinkapp.model.Customer;
+import com.example.foodblackpinkapp.model.MessageVideo;
 import com.example.foodblackpinkapp.model.Order;
 import com.example.foodblackpinkapp.model.OrderDetail;
 import com.example.foodblackpinkapp.model.Product;
 import com.example.foodblackpinkapp.model.ProductDetail;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -62,11 +67,23 @@ public interface ApiService {
     Call<Void> deleteCart(@Path("customerId") String customerId, @Path("productId") Integer productId);
 
     @POST("carts/checkout/{customerId}")
-    Call<Integer> checkoutCart(@Path("customerId")String customerId);
+    Call<Void> checkoutCart(@Path("customerId")String customerId);
 
     @PUT("order-details/{orderId}/{address}")
     Call<Void> updateOrderAddress(@Path("orderId") int orderId, @Path("address")String address);
 
     @GET("bill/{customerId}")
     Call<List<BillViewDTO>> getBillByCustomerId(@Path("customerId") String customerId);
+    Gson gson = new GsonBuilder().setDateFormat("yyyy MM dd HH:mm:ss").create();
+    ApiService servieapi = new Retrofit.Builder()
+            .baseUrl("http://app.iotstar.vn/appfoods/")
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build().create(ApiService.class);
+
+    @GET("getvideos.php")
+    Call<MessageVideo> getVideos();
 }
+
+
+
+

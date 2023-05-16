@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.foodblackpinkapp.R;
 import com.example.foodblackpinkapp.adapter.CartAdapter;
@@ -25,7 +24,6 @@ import com.example.foodblackpinkapp.database.ApiService;
 import com.example.foodblackpinkapp.database.RetrofitBase;
 import com.example.foodblackpinkapp.databinding.FragmentCartBinding;
 import com.example.foodblackpinkapp.model.CartProductViewDTO;
-import com.example.foodblackpinkapp.model.Customer;
 import com.example.foodblackpinkapp.model.Order;
 import com.example.foodblackpinkapp.model.Product;
 import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
@@ -98,10 +96,14 @@ public class CartFragment extends BaseFragment {
                             @Override
                             public void clickDeteteFood(CartProductViewDTO cartProductView, int position) {
                                 deleteFoodFromCart(cartProductView,position);
+
+
                             }
+
                             @Override
                             public void updateItemFood(CartProductViewDTO cartProductView, int position) {
                                 calculateTotalPrice();
+
                             }
                         });
                         mFragmentCartBinding.rcvFoodCart.setAdapter(mCartAdapter);
@@ -125,11 +127,6 @@ public class CartFragment extends BaseFragment {
 
     private void clearCart() {
         // Xóa giỏ hàng
-        if (mListCartProduct != null) {
-            mListCartProduct.clear();
-        }
-        mCartAdapter.notifyDataSetChanged();
-        calculateTotalPrice();
     }
 
     private void calculateTotalPrice() {
@@ -153,9 +150,9 @@ public class CartFragment extends BaseFragment {
     }
 
     private void deleteFoodFromCart(CartProductViewDTO cartProductViewDTOm, int position) {
+        ApiService mApiService = RetrofitBase.getInstance();
         Log.i("Cart Delete", "Cart Product View DTO: " + cartProductViewDTOm.toString());
 
-        ApiService mApiService = RetrofitBase.getInstance();
         Call<Void> call = mApiService.deleteCart(cartProductViewDTOm.getCustomerId(),cartProductViewDTOm.getProductId());
         call.enqueue(new Callback<Void>() {
             @Override
@@ -200,7 +197,6 @@ public class CartFragment extends BaseFragment {
         if (mListCartProduct == null || mListCartProduct.isEmpty()) {
             return;
         }
-        Customer customer = ShareRefManager.getInstance(getActivity()).getCustomer();
 
         @SuppressLint("InflateParams") View viewDialog = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_order, null);
 
@@ -221,16 +217,6 @@ public class CartFragment extends BaseFragment {
         tvFoodsOrder.setText(getStringListFoodsOrder());
         tvPriceOrder.setText(mFragmentCartBinding.tvTotalPrice.getText().toString());
 
-        // Set default values for customer information
-        edtNameOrder.setText(customer.getFullname());
-        edtPhoneOrder.setText(customer.getPhone());
-        edtAddressOrder.setText(""); // Để địa chỉ trống để người dùng nhập thông tin
-
-        // Disable editing for customer information
-        edtNameOrder.setEnabled(false);
-        edtPhoneOrder.setEnabled(false);
-        edtAddressOrder.setEnabled(true); // Cho phép người dùng chỉnh sửa địa chỉ giao hàng
-
         // Set listener
         tvCancelOrder.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
@@ -238,63 +224,12 @@ public class CartFragment extends BaseFragment {
             String strName = edtNameOrder.getText().toString().trim();
             String strPhone = edtPhoneOrder.getText().toString().trim();
             String strAddress = edtAddressOrder.getText().toString().trim();
-            // Tiếp tục xử lý việc tạo đơn hàng
-            if (StringUtil.isEmpty(strName) || StringUtil.isEmpty(strPhone) || StringUtil.isEmpty(strAddress)) {
-                GlobalFunction.showToastMessage(getActivity(), getString(R.string.message_enter_infor_order));
-            } else {
-                ApiService mApiService = RetrofitBase.getInstance();
-                Call<Integer> call = mApiService.checkoutCart(customer.getCustomerId());
-                call.enqueue(new Callback<Integer>() {
-                    @Override
-                    public void onResponse(Call<Integer> call, Response<Integer> response) {
-                        if (response.isSuccessful()) {
 
-                            Log.d("MA DON HANG",response.body().toString());
-                            // Xử lý thành công
-                            GlobalFunction.showToastMessage(getActivity(), getString(R.string.msg_order_success));
-                            GlobalFunction.hideSoftKeyboard(getActivity());
-                            bottomSheetDialog.dismiss();
-                            clearCart();
-                            Call<Void> callAddress =mApiService.updateOrderAddress(response.body(), strAddress);
-                            callAddress.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                }
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) {
-                                }
-                            });
-                        } else {
-                            // Xử lý lỗi
-                            GlobalFunction.showToastMessage(getActivity(), getString(R.string.msg_order_success));
-                            String errorBody = null;
-                            if (response.errorBody() != null) {
-                                try {
-                                    errorBody = response.errorBody().string();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            Log.e("Cart Update", "Failed to update cart. Server response: " + response.code() + ", Error body: " + errorBody);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Integer> call, Throwable t) {
-                        // Xử lý lỗi kết nối
-                        Log.e("Cart Update", "Error updating cart.", t);
-                        if (t != null) {
-                            Log.e("Cart Update", "Error message: " + t.getMessage());
-                        }
-                    }
-                });
-
-            }
 
         });
+
         bottomSheetDialog.show();
     }
-
     private String getStringListFoodsOrder() {
         // Lấy danh sách sản phẩm trong đơn hàng dạng chuỗi
         return null;

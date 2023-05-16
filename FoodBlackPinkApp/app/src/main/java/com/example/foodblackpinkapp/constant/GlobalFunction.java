@@ -24,12 +24,14 @@ public class GlobalFunction {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
     public static void startActivity(Context context, Class<?> clz, Bundle bundle) {
         Intent intent = new Intent(context, clz);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
     public static void hideSoftKeyboard(Activity activity) {
         try {
             InputMethodManager inputMethodManager = (InputMethodManager) activity.
@@ -39,6 +41,7 @@ public class GlobalFunction {
             ex.printStackTrace();
         }
     }
+
     public static void showMessageError(Activity activity) {
         Toast.makeText(activity, Constant.GENERIC_ERROR, Toast.LENGTH_SHORT).show();
     }

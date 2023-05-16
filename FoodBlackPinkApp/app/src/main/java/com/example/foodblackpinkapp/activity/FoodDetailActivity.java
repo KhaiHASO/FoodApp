@@ -234,7 +234,7 @@ public class FoodDetailActivity extends BaseActivity {
                     } else {
                         String errorBody = response.errorBody().toString();
                         Log.d("CartError", "lỗi" + errorBody);
-                        Toast.makeText(getApplicationContext(), "đã tồn tại trong giỏ hàng", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "đã tồn tại" + errorBody, Toast.LENGTH_SHORT).show();
 
                         // Xử lý khi thêm vào giỏ hàng không thành công
                     }
