@@ -14,11 +14,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["lombok.addLombokGeneratedAnnotation": "true"]
-            }
-        }
     }
 
     buildTypes {
@@ -53,8 +48,7 @@ dependencies {
     implementation 'me.relex:circleindicator:2.1.6'
     //view pager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
-    //lombok
-    implementation 'org.projectlombok:lombok:1.18.20'
+
 
 
     implementation 'com.github.bumptech.glide:glide:4.12.0'
@@ -67,6 +61,16 @@ dependencies {
     //login
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
+
+    /**firebase dependencies*/
+    implementation 'com.google.firebase:firebase-auth:21.1.0'
+    implementation 'com.google.firebase:firebase-database:20.1.0'
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
+    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-firestore:24.4.5'
+    implementation 'com.google.firebase:firebase-storage:20.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:8.0.1'
+
 
 
 }

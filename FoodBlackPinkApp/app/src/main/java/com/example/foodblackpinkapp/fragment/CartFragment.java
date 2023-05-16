@@ -26,8 +26,6 @@ import com.example.foodblackpinkapp.database.RetrofitBase;
 import com.example.foodblackpinkapp.databinding.FragmentCartBinding;
 import com.example.foodblackpinkapp.model.CartProductViewDTO;
 import com.example.foodblackpinkapp.model.Customer;
-import com.example.foodblackpinkapp.model.Order;
-import com.example.foodblackpinkapp.model.Product;
 import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
 import com.example.foodblackpinkapp.utils.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;

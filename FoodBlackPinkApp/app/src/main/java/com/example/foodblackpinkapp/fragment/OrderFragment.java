@@ -91,9 +91,6 @@ public class OrderFragment extends BaseFragment {
                     mListOrder.clear();
                     mListOrder.addAll(response.body());
                     mOrderAdapter.notifyDataSetChanged();
-                    for (BillViewDTO order : mListOrder) {
-                        Log.d("Order", order.toString());
-                    }
                 } else {
                     Log.e("getListOrders", "Response from server is not successful");
                 }

@@ -10,6 +10,7 @@ import com.example.foodblackpinkapp.R;
 import com.example.foodblackpinkapp.adapter.MainViewPagerAdapter;
 import com.example.foodblackpinkapp.databinding.ActivityMainBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends BaseActivity {
 

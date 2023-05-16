@@ -6,10 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 public class Order implements Serializable {
 
     @SerializedName("orderId")
