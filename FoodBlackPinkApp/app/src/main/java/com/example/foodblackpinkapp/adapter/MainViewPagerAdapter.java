@@ -9,8 +9,6 @@ import com.example.foodblackpinkapp.fragment.AccountFragment;
 import com.example.foodblackpinkapp.fragment.CartFragment;
 import com.example.foodblackpinkapp.fragment.HomeFragment;
 import com.example.foodblackpinkapp.fragment.OrderFragment;
-import com.example.foodblackpinkapp.fragment.TrendFragment;
-import com.example.foodblackpinkapp.fragment.TrendingFragment;
 
 public class MainViewPagerAdapter extends FragmentStateAdapter {
 
@@ -29,7 +27,7 @@ public class MainViewPagerAdapter extends FragmentStateAdapter {
                 return new CartFragment();
 
             case 2:
-                return new TrendFragment();
+                //return new FeedbackFragment();
 
             case 3:
                 return new OrderFragment();
