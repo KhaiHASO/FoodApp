@@ -1,126 +1,66 @@
 package com.example.foodblackpinkapp.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.foodblackpinkapp.R;
-import com.example.foodblackpinkapp.activity.MainActivity;
-import com.example.foodblackpinkapp.adapter.OrderAdapter;
-import com.example.foodblackpinkapp.database.ApiService;
-import com.example.foodblackpinkapp.database.RetrofitBase;
-import com.example.foodblackpinkapp.databinding.FragmentOrderBinding;
-import com.example.foodblackpinkapp.model.BillViewDTO;
-import com.example.foodblackpinkapp.sharereferrences.ShareRefManager;
-import com.example.foodblackpinkapp.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link OrderFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class OrderFragment extends Fragment {
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
-public class OrderFragment extends BaseFragment {
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
 
-    private FragmentOrderBinding mFragmentOrderBinding;
-    private List<BillViewDTO> mListOrder;
-    private OrderAdapter mOrderAdapter;
-    private Handler mHandler;
-    private Runnable mRunnable;
-    private static final long DELAY = 5000; // Độ trễ 5 giây
+    public OrderFragment() {
+        // Required empty public constructor
+    }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mFragmentOrderBinding = FragmentOrderBinding.inflate(inflater, container, false);
-        initView();
-        startLoadingOrders();
-        return mFragmentOrderBinding.getRoot();
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment OrderFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static OrderFragment newInstance(String param1, String param2) {
+        OrderFragment fragment = new OrderFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        stopLoadingOrders();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     @Override
-    protected void initToolbar() {
-        if (getActivity() != null) {
-            ((MainActivity) getActivity()).setToolBar(false, getString(R.string.order));
-        }
-    }
-
-    private void initView() {
-        if (getActivity() == null) {
-            return;
-        }
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        mFragmentOrderBinding.rcvOrder.setLayoutManager(linearLayoutManager);
-
-        mListOrder = new ArrayList<>();
-        mOrderAdapter = new OrderAdapter(mListOrder);
-        mFragmentOrderBinding.rcvOrder.setAdapter(mOrderAdapter);
-    }
-
-    public void getListOrders() {
-        if (getActivity() == null) {
-            return;
-        }
-
-        String customerId = ShareRefManager.getInstance(getActivity()).getCustomer().getCustomerId();
-
-        ApiService mApiService = RetrofitBase.getInstance();
-        Call<List<BillViewDTO>> call = mApiService.getBillByCustomerId(customerId);
-
-        call.enqueue(new Callback<List<BillViewDTO>>() {
-            @Override
-            public void onResponse(Call<List<BillViewDTO>> call, Response<List<BillViewDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    mListOrder.clear();
-                    mListOrder.addAll(response.body());
-                    mOrderAdapter.notifyDataSetChanged();
-                    for (BillViewDTO order : mListOrder) {
-                        Log.d("Order", order.toString());
-                    }
-                } else {
-                    Log.e("getListOrders", "Response from server is not successful");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<BillViewDTO>> call, Throwable t) {
-                Log.e("getListOrders", "Error calling API", t);
-            }
-        });
-    }
-
-    private void startLoadingOrders() {
-        mHandler = new Handler();
-        mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                getListOrders();
-                mHandler.postDelayed(this, DELAY);
-            }
-        };
-        mHandler.postDelayed(mRunnable, DELAY);
-    }
-
-    private void stopLoadingOrders() {
-        if (mHandler != null && mRunnable != null) {
-            mHandler.removeCallbacks(mRunnable);
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_order, container, false);
     }
 }

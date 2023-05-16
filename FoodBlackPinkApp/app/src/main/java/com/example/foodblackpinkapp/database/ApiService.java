@@ -1,6 +1,5 @@
 package com.example.foodblackpinkapp.database;
 
-import com.example.foodblackpinkapp.model.BillViewDTO;
 import com.example.foodblackpinkapp.model.Cart;
 import com.example.foodblackpinkapp.model.CartProductViewDTO;
 import com.example.foodblackpinkapp.model.Category;
@@ -74,6 +73,7 @@ public interface ApiService {
 
     @GET("bill/{customerId}")
     Call<List<BillViewDTO>> getBillByCustomerId(@Path("customerId") String customerId);
+    
     Gson gson = new GsonBuilder().setDateFormat("yyyy MM dd HH:mm:ss").create();
     ApiService servieapi = new Retrofit.Builder()
             .baseUrl("http://app.iotstar.vn/appfoods/")
