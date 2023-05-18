@@ -58,4 +58,12 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<Customer> optionalCustomer = customerRepository.findCustomerByUsernameAndPassword(username, password);
         return optionalCustomer.orElse(null);
     }
+
+    @Override
+    public boolean doesCustomerExist(Customer customer) {
+        Optional<Customer> existingCustomerById = customerRepository.findByCustomerId(customer.getCustomerId());
+        Optional<Customer> existingCustomerByEmail = customerRepository.findByEmail(customer.getEmail());
+
+        return existingCustomerById.isPresent() || existingCustomerByEmail.isPresent();
+    }
 }

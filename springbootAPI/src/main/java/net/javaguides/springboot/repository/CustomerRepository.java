@@ -11,4 +11,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     @Query("SELECT c FROM Customer c WHERE c.customerId = :username AND c.password = :password")
     Optional<Customer> findCustomerByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
+    Optional<Customer> findByCustomerId(String customerId);
+
+    Optional<Customer> findByEmail(String email);
 }

@@ -42,15 +42,6 @@ public interface ApiService {
     @POST("carts")
     Call<Cart> addToCart(@Body Cart cart);
 
-    @PUT("carts/{cartId}")
-    Call<Cart> updateCart(@Path("cartId") int cartId, @Body Cart updatedCart);
-
-    @POST("orders")
-    Call<Order> placeOrder(@Body Order order);
-
-    @POST("order-details")
-    Call<OrderDetail> addOrderDetail(@Body OrderDetail orderDetail);
-
     @GET("cart-products/{customerId}")
     Call<List<CartProductViewDTO>> getCartProductsByCustomerId(@Path("customerId") String customerId);
 

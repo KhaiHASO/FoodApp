@@ -7,9 +7,9 @@
     // Tab Menu
     <string name="home">Đồ ăn</string>
     <string name="cart">Giỏ hàng</string>
-    <string name="trend">Xu hướng</string>
     <string name="contact">Liên hệ</string>
     <string name="account">Tôi</string>
+    <string name="trend">Xu hướng</string>
     <string name="order">Lịch sử đơn hàng</string>
 
     // action

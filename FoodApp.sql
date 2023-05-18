@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : khaihaso
+ Source Server         : metmoi
  Source Server Type    : MySQL
  Source Server Version : 80032
  Source Host           : localhost:3306
@@ -11,7 +11,7 @@
  Target Server Version : 80032
  File Encoding         : 65001
 
- Date: 16/05/2023 19:44:55
+ Date: 19/05/2023 00:21:14
 */
 
 SET NAMES utf8mb4;
@@ -39,6 +39,7 @@ CREATE TABLE `carts`  (
 -- Records of carts
 -- ----------------------------
 BEGIN;
+INSERT INTO `carts` (`cart_id`, `customer_id`, `product_id`, `quantity`, `price`) VALUES (83, 'khai11', NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -74,6 +75,7 @@ CREATE TABLE `customers`  (
   PRIMARY KEY (`customer_id`) USING BTREE,
   UNIQUE INDEX `phone`(`phone` ASC) USING BTREE,
   INDEX `role`(`role_id` ASC) USING BTREE,
+  UNIQUE INDEX `email`(`email` ASC) USING BTREE,
   CONSTRAINT `role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -81,7 +83,7 @@ CREATE TABLE `customers`  (
 -- Records of customers
 -- ----------------------------
 BEGIN;
-INSERT INTO `customers` (`customer_id`, `email`, `phone`, `fullname`, `password`, `photo`, `role_id`) VALUES ('anh00', 'john.doe@example.com', '0367151727', 'Cao Hoang Anh', '123', 'https://example.com/profile.jpg', 1), ('khai00', 'khaikhai331@gmail.com', '123456789', 'Phan Hoang Khai', '123', NULL, 0);
+INSERT INTO `customers` (`customer_id`, `email`, `phone`, `fullname`, `password`, `photo`, `role_id`) VALUES ('anh00', 'john.doe@example.com', '0367151727', 'Cao Hoang Anh', '123', 'https://example.com/profile.jpg', 1), ('khai00', '@@', '123', 'phan hoang khai', '123', NULL, 0), ('khai11', 'khaikhai@@', '456', 'phan hoang khai', '123', NULL, 0);
 COMMIT;
 
 -- ----------------------------

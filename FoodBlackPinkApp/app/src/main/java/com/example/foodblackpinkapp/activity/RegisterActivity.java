@@ -83,7 +83,7 @@ public class RegisterActivity extends BaseActivity {
                 } else {
                     String errorBody = response.errorBody().toString();
                     Log.d("RegistrationError", "Đăng ký không thành công: " + errorBody);
-                    Toast.makeText(RegisterActivity.this, "Đăng ký không thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Đăng ký không thành công, username, email, hoặc sđt trùng", Toast.LENGTH_SHORT).show();
                 }
             }
 

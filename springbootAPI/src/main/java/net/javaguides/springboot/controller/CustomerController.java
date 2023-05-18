@@ -21,7 +21,12 @@ public class CustomerController {
     // create customer REST API
     @PostMapping()
     public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer) {
-        return new ResponseEntity<Customer>(customerService.saveCustomer(customer), HttpStatus.CREATED);
+        if (customerService.doesCustomerExist(customer)) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        Customer savedCustomer = customerService.saveCustomer(customer);
+        return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
     }
 
     // get all customers REST API

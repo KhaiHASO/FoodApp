@@ -11,4 +11,6 @@ public interface CustomerService {
     Customer updateCustomer(Customer customer, String id);
     void deleteCustomer(String id);
     Customer login(String username, String password);
+
+    boolean doesCustomerExist(Customer customer);
 }
