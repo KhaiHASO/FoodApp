@@ -88,12 +88,12 @@ public class CartController {
     @PostMapping("/checkout/{customerId}")
     public ResponseEntity<String> createOrder(@PathVariable String customerId) {
         try {
-            // Bước 2: Tạo đơn đặt hàng từ giỏ hàng
+            // Bước 1: Tạo đơn đặt hàng từ giỏ hàng
            orderService.createOrderFromCart(customerId);
-            // Bước 3: Thêm chi tiết đơn hàng từ giỏ hàng
+            // Bước 2: Thêm chi tiết đơn hàng từ giỏ hàng
             orderDetailService.createOrderDetailsFromCart(customerId);
 
-            // Bước 4: Xóa giỏ hàng sau khi hoàn tất đặt hàng
+            // Bước 3: Xóa giỏ hàng sau khi hoàn tất đặt hàng
             cartService.emptyCart(customerId);
             int orderId= orderService.getLastInsertedOrderId();
 
