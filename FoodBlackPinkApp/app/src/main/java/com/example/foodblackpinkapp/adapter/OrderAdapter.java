@@ -11,7 +11,9 @@ import com.example.foodblackpinkapp.databinding.ItemOrderBinding;
 import com.example.foodblackpinkapp.model.BillViewDTO;
 
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
@@ -44,7 +46,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.mItemOrderBinding.tvMenu.setText(bill.getProductList());
         holder.mItemOrderBinding.tvDate.setText(bill.getOderDate());
 
-        String strAmount = String.valueOf(bill.getTotalPrice())+"00 VND";
+        //String strAmount = String.valueOf(bill.getTotalPrice())+".00 VND";
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.getDefault());
+        String strAmount = numberFormat.format(bill.getTotalPrice()) + ",000VND";
         holder.mItemOrderBinding.tvTotalAmount.setText(strAmount);
 
         String paymentMethod = "";
